@@ -1,4 +1,4 @@
-# Quantitative Portfolio optimization using Crypto data
+# Quantitative Portfolio Optimization using Crypto Data
 
 by Joseph Shih, May 26 2025
 
