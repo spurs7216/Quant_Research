@@ -82,7 +82,7 @@ Leverage HMMs to identify latent market regimes and drive a simple regime‐awar
      - **Regime 1 (Trending):** Use a simple momentum signal (e.g. 1‐hour moving average crossover).  
    - Optionally, tailor **position sizing** by regime volatility (e.g. smaller positions in high-vol states).
 
-## Alpha_in_crypto
+## 📊Alpha_in_crypto
 Implement a diverse set of systematic strategies to uncover short‐term alphas across multiple coins, based on both machine‐learning and classic technical indicators.
 1. **Rolling Ridge Regression**
    - Setup: Use a rolling window to form training set.
