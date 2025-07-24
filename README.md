@@ -20,29 +20,20 @@ This repository contains tick-level perpetual futures data for ten major cryptoc
     *  taker_buy_volume:	Base‐asset volume purchased by taker orders (market buys)
     *  taker_buy_quote_volume:	Quote‐asset volume purchased by taker orders
 
-## 📊Simple
-Perform a deep dive into crypto return dynamics and test a simple mean-reversion strategy.
-1. **Momentum & Volatility Factors**  
-   - **Momentum (L = 24 h)**: cumulative return over the past 24 hours  
-   - **Volatility (L = 24 h)**: rolling standard deviation of hourly returns  
-   - Tag top/bottom coins each period and evaluate next‐hour return  
-
-2. **Autoregressive Modeling**  
-   - Fit **AR(p)** models to each coin’s return series  
-   - Inspect coefficients and residuals for serial correlation  
-
-3. **Stationarity & Mean-Reversion Tests**  
+## 📊Pairs
+Perform a research on crypto pairs trading and test a simple mean-reversion strategy.
+1. **Stationarity & Mean-Reversion Tests**  
    - **Augmented Dickey–Fuller (ADF)** to confirm stationarity of returns  
    - Estimate **half-life** of mean reversion via AR(1) decay  
    - Demonstrate stronger mean-reverting behavior in certain coins  
 
-4. **Cointegration Analysis**  
+2. **Cointegration Analysis**  
    - **Cointegration tests** between coin pairs/triples  
      - **CADF** (Christiano–Dickey–Fuller)  
      - **Johansen’s test** for multivariate cointegration  
    - Identify candidate pairs that share long-run equilibrium  
 
-5. **Pairs-Trading / Mean-Reversion Strategy**  
+3. **Pairs-Trading / Mean-Reversion Strategy**  
    - Construct **spread** \(Sₜ = price₁ₜ – β·price₂ₜ\) using OLS‐estimated β  
    - Backtest a simple rule:  
      - Go **long** spread when it is sufficiently below its rolling mean  
@@ -90,3 +81,39 @@ Leverage HMMs to identify latent market regimes and drive a simple regime‐awar
      - **Regime 0 (Mean‐reverting):** Go **long** when posterior > 0.8, flat otherwise.  
      - **Regime 1 (Trending):** Use a simple momentum signal (e.g. 1‐hour moving average crossover).  
    - Optionally, tailor **position sizing** by regime volatility (e.g. smaller positions in high-vol states).
+
+## Alpha_in_crypto
+Implement a diverse set of systematic strategies to uncover short‐term alphas across multiple coins, based on both machine‐learning and classic technical indicators.
+1. **Rolling Ridge Regression**
+   - Setup: Use a rolling window to form training set.
+   - Features: For each asset and look‐back date, stack lagged returns and technical covariates, rolling volatility change, imbalance, and distance to extremes.
+   - Model: Fit a scikit‐learn Ridge regression to predict next‐period return​.
+   - Positioning: Cross‐sectionally threshold predicted alphas at the 95% quantile and scale exposures by a gross leverage factor (0.5) adjusted for each asset’s volatility. 
+
+2. **Moving‐Average Crossover**
+   - Short & Long MAs: Compute a 12‐period and 24‐period simple moving average of closing prices.
+   - Signal Construction: Take the difference Δ=SMA12−SMA24​; only trade when ∣Δ∣ exceeds the cross‐sectional 95th95th percentile.
+   - Weighting: Assign long/short weights proportional to sign(Δ) and scale by inverse ATR24 to control for volatility.
+
+3. **Combined Indicator Signal**
+   - Indicator Suite:
+      - RSI12 (overbought/oversold)
+      - Stochastic %K (12)
+      - Ease of Movement (EMV)
+      - TRIX (12)
+      - ADX12 with +DI/–DI directional filters
+   - Voting Mechanism: At each minute and for each coin, count how many indicators signal bullish vs. bearish.
+   - Trading Rule: Go long on coins where bullish votes exceed bearish votes, short if the reverse, and flat otherwise.
+
+4. **Soft‐Voting with Threshold & Volume Filter**
+   - Soft Score: Compute a weighted sum of individual indicator signals, where each indicator’s weight combines its historical accuracy and a regime‐specific momentum or reversal factor.
+   - Thresholding: Zero out scores with absolute value below θ=0.3.
+   - Volume Filter: Exclude low‐liquidity coins by applying a minimum volume‐based screen before executing trades.
+
+5. **Performance Evaluation**
+   - Metrics Calculation:
+      - AvgRet: Mean hourly return
+      - Sharpe: Annualized ratio (√8760 hours)
+      - MaxDraw: Maximum drawdown
+      - AvgWin/AvgLoss: Mean positive/negative returns
+   - Summary & Plotting: Aggregate results into a DataFrame and visualize cumulative P&L across all four methods to compare risk‐adjusted performance.
